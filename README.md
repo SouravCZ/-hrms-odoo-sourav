@@ -1,22 +1,46 @@
-# HRMS - Human Resource Management System
+<div align="center">
 
-A full-stack HRMS web application built with **React** (frontend) and **Express.js** (backend) with **PostgreSQL** for database storage. The system supports role-based access for **Admin**, **HR**, and **Employee** users, covering employee management, attendance tracking, leave requests, and salary management.
+# HRMS — Human Resource Management System
 
-> **Workflow Diagram:** [View on Excalidraw](https://link.excalidraw.com/l/65VNwvy7c4X/58RLEJ4oOwh)
+**Every workday, perfectly aligned.**
+
+Built for the Odoo x Adamas University Hackathon '26
+
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&style=flat-square)
+![Node](https://img.shields.io/badge/Node.js-Express_4-339933?logo=node.js&logoColor=white&style=flat-square)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-4169E1?logo=postgresql&logoColor=white&style=flat-square)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white&style=flat-square)
+![JWT](https://img.shields.io/badge/Auth-JWT-black?logo=jsonwebtokens&style=flat-square)
+
+[Demo Video](https://drive.google.com/file/d/1fw9xdHg_EUNv9nqe5fWnCnmLphWWB9b4/view) · [Workflow Diagram](https://link.excalidraw.com/l/65VNwvy7c4X/58RLEJ4oOwh) · [Setup](#setup--installation)
+
+</div>
+
+---
+
+## What This Is
+
+A full-stack HRMS covering the actual lifecycle of an employee at a company: onboarding, daily attendance, leave requests, and salary — with role-based access split across Admin, HR, and Employee. Built with React on the frontend and Express + PostgreSQL on the backend, no BaaS platforms, no third-party auth providers, just a real database and a real API.
+
+## Demo
+
+**Watch the full walkthrough here: [Demo Video](https://drive.google.com/file/d/1fw9xdHg_EUNv9nqe5fWnCnmLphWWB9b4/view)**
+
+The video covers the complete flow end to end — company signup, employee creation, first login and forced password change, check-in/check-out, a leave request going through approval, and the salary breakdown view.
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 18, React Router 6, Vite 5, Axios, Lucide React (icons), react-hot-toast |
-| **Backend** | Node.js, Express 4 |
-| **Database** | PostgreSQL (via `pg` driver) |
-| **Authentication** | JWT (jsonwebtoken) + bcrypt password hashing |
-| **File Uploads** | Multer |
-| **Email** | Nodemailer (SMTP via Gmail) |
-| **Styling** | Vanilla CSS with CSS Custom Properties |
+|---|---|
+| Frontend | React 18, React Router 6, Vite 5, Axios, Lucide React, react-hot-toast |
+| Backend | Node.js, Express 4 |
+| Database | PostgreSQL (via `pg`) |
+| Auth | JWT (jsonwebtoken) + bcrypt |
+| File Uploads | Multer |
+| Email | Nodemailer (SMTP via Gmail) |
+| Styling | Vanilla CSS with CSS custom properties — no framework, no gradients, no AI-template look |
 
 ---
 
@@ -121,53 +145,50 @@ hrms-odoo-sourav/
 ## Features
 
 ### Authentication & Roles
-- **Company signup** creates an admin account
-- **Login** via employee code or email + password (JWT-based)
-- **Forced password change** on first login
-- Three roles: `admin`, `hr`, `employee` with role-based route protection
+- Company signup creates the first admin account
+- Login via employee code or email + password, JWT-based
+- Forced password change on first login
+- Three roles — admin, hr, employee — with route-level access control
 
 ### Employee Management (Admin/HR)
-- Employee card grid with search filtering
-- Add new employee (auto-generates employee code + temp password, sends welcome email)
+- Employee card grid with search
+- Add employee: auto-generates employee code + temp password, sends a welcome email
 - Edit employee details (name, email, phone, department, job title, joining date)
-- Set/edit employee salary structure
+- Set or edit an employee's salary structure
 
 ### Employee Dashboard
-- Regular employees are redirected to their own profile (cannot see other employees)
-- Admin/HR see the full employee card grid
+- Employees land on their own profile and can't browse other employees
+- Admin/HR see the full card grid
 
 ### Profile
-- **Private Info tab**: Employee ID, email, phone, department, job title, joining date
-- **Resume tab**: Editable about, skills (add/remove pills), certifications (name + link)
-- **Salary Info tab**: Earnings (basic, HRA, allowances) + deductions (PF, professional tax) with percentages
-- Avatar with attendance status dot
+- **Private Info** — employee ID, email, phone, department, job title, joining date
+- **Resume** — editable about section, skills as add/remove pills, certifications with links
+- **Salary Info** — earnings (basic, HRA, allowances) and deductions (PF, professional tax) with amounts and percentages
+- Avatar carries a live attendance status dot
 
 ### Attendance
-- **Check-in/Check-out** button in navbar for employees:
-  - Red = not checked in
-  - Green = checked in (working)
-  - Purple = checked out (done for the day)
-- **Admin view**: Day-by-day navigation showing all employees' check-in/out times
-- **Employee view**: Monthly attendance with summary stats (days present, leaves, total working days)
+- Check-in/check-out button lives in the navbar:
+  - Red — not checked in
+  - Green — checked in
+  - Purple — checked out for the day
+- Admin view: day-by-day, all employees' check-in/out times
+- Employee view: own month, with days-present / leaves / total-working-days summary
 
-### Time Off / Leave Management
-- **Employee**: View leave balances (paid, sick), submit leave requests with optional attachment (PDF/image), view request history
-- **Admin/HR**: View all leave requests, approve or reject pending requests
-- Attachments are viewable as clickable links in the request table
+### Time Off
+- Employee: view paid/sick balances, submit a request with an optional attachment, see request history
+- Admin/HR: view all requests, approve or reject
+- Attachments show up as clickable links in the request table
 
 ### Salary Management
-- **Admin can set salary** for any employee with:
-  - Monthly wage, Basic %, HRA %, Standard Allowance, Performance Bonus, Leave Travel Allowance, Fixed Allowance, PF Employee %, PF Employer %, Professional Tax
-- **Salary breakdown** displayed with amounts in INR and percentage of monthly wage
+- Admin sets monthly wage, Basic %, HRA %, Standard Allowance, Performance Bonus, Leave Travel Allowance, Fixed Allowance, PF Employee %, PF Employer %, Professional Tax
+- Breakdown displayed in ₹ and as a percentage of monthly wage
 
-### Toast Notifications
-- react-hot-toast for all success/error feedback (replaces alerts and inline messages)
+### Notifications
+- react-hot-toast handles all success/error feedback — no browser alerts
 
 ---
 
 ## Database Schema
-
-6 tables with the following relationships:
 
 ```
 companies ──< users ──< attendance
@@ -177,68 +198,68 @@ companies ──< users ──< attendance
 ```
 
 | Table | Purpose |
-|-------|---------|
-| `companies` | Company info (name, code, logo) |
-| `users` | All users (admin/hr/employee) with profile data, skills, certifications |
-| `attendance` | Daily check-in/check-out records with work hours |
-| `leave_balances` | Annual leave allocations per type (paid/sick/unpaid) |
-| `leave_requests` | Leave requests with status workflow (pending -> approved/rejected) |
+|---|---|
+| `companies` | Company info — name, code, logo |
+| `users` | All users (admin/hr/employee), profile data, skills, certifications |
+| `attendance` | Daily check-in/check-out records with computed work hours |
+| `leave_balances` | Annual leave allocation per type (paid/sick/unpaid) |
+| `leave_requests` | Leave requests with status flow — pending → approved/rejected |
 | `salary` | Percentage-based salary structure per employee |
 
 ---
 
 ## API Endpoints
 
-### Auth (`/api/auth`)
+### Auth — `/api/auth`
 | Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
+|---|---|---|---|
 | POST | `/signup-company` | Create company + admin account | Public |
 | POST | `/login` | Login (employee code or email) | Public |
-| POST | `/change-password` | Update password (forced on first login) | Required |
+| POST | `/change-password` | Update password, forced on first login | Required |
 
-### Employees (`/api/employees`)
+### Employees — `/api/employees`
 | Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/` | List all employees with today's attendance status | Required |
-| POST | `/` | Create new employee (admin/HR only) | Admin/HR |
-| GET | `/:id` | Get employee profile (includes skills, certifications) | Required |
-| PUT | `/:id` | Update employee details (admin/HR only) | Admin/HR |
+|---|---|---|---|
+| GET | `/` | List employees with today's attendance status | Required |
+| POST | `/` | Create employee | Admin/HR |
+| GET | `/:id` | Get employee profile (skills, certifications included) | Required |
+| PUT | `/:id` | Update employee details | Admin/HR |
 | PUT | `/:id/resume` | Update own skills/certifications/about | Self |
 
-### Attendance (`/api/attendance`)
+### Attendance — `/api/attendance`
 | Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/check-in` | Check in (current time) | Self |
-| POST | `/check-out` | Check out (calculates work hours) | Self |
-| GET | `/me/today` | Get own today's attendance | Self |
-| GET | `/day?date=YYYY-MM-DD` | Get all employees' attendance for a day | Admin/HR |
-| GET | `/me/month?month=YYYY-MM` | Get own monthly attendance + summary | Self |
+|---|---|---|---|
+| POST | `/check-in` | Check in | Self |
+| POST | `/check-out` | Check out, computes work hours | Self |
+| GET | `/me/today` | Own today's attendance | Self |
+| GET | `/day?date=YYYY-MM-DD` | All employees for a given day | Admin/HR |
+| GET | `/me/month?month=YYYY-MM` | Own month + summary | Self |
 
-### Leave / Time Off (`/api/leave`)
+### Leave / Time Off — `/api/leave`
 | Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/balances` | Get own leave balances | Self |
-| POST | `/requests` | Submit leave request (multipart with attachment) | Self |
-| GET | `/requests/me` | Get own leave request history | Self |
-| GET | `/requests?status=pending` | Get all leave requests (filterable) | Admin/HR |
-| PATCH | `/requests/:id` | Approve or reject a leave request | Admin/HR |
+|---|---|---|---|
+| GET | `/balances` | Own leave balances | Self |
+| POST | `/requests` | Submit request (multipart, optional attachment) | Self |
+| GET | `/requests/me` | Own request history | Self |
+| GET | `/requests?status=pending` | All requests, filterable | Admin/HR |
+| PATCH | `/requests/:id` | Approve or reject | Admin/HR |
 
-### Salary (`/api/salary`)
+### Salary — `/api/salary`
 | Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/:userId` | Get salary breakdown (self or admin viewing any) | Self/Admin |
-| PUT | `/:userId` | Set/update salary structure | Admin |
+|---|---|---|---|
+| GET | `/:userId` | Salary breakdown | Self/Admin |
+| PUT | `/:userId` | Set or update salary structure | Admin |
 
 ---
 
 ## Setup & Installation
 
 ### Prerequisites
-- Node.js (v18+)
-- PostgreSQL (v14+)
+- Node.js v18+
+- PostgreSQL v14+
 - npm or yarn
 
-### 1. Clone the repository
+### 1. Clone
 ```bash
 git clone https://github.com/SouravCZ/hrms-odoo-sourav.git
 cd hrms-odoo-sourav
@@ -246,26 +267,20 @@ cd hrms-odoo-sourav
 
 ### 2. Set up the database
 ```bash
-# Create the database
 psql -U postgres -c "CREATE DATABASE hrms_db;"
-
-# Run the schema
 psql -U postgres -d hrms_db -f db/schema.sql
 ```
 
 ### 3. Configure environment variables
 ```bash
-# Copy the example and edit with your values
 cp .env.example .env
 ```
 
-Required variables in `.env`:
 ```
 PORT=5000
 DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/hrms_db
 JWT_SECRET=your-secret-key
 
-# SMTP (for welcome emails)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
@@ -276,62 +291,56 @@ FRONTEND_URL=http://localhost:3000
 
 ### 4. Install dependencies
 ```bash
-# Backend
 npm install
-
-# Frontend
-cd frontend
-npm install
-cd ..
+cd frontend && npm install && cd ..
 ```
 
-### 5. Start the application
+### 5. Run
 ```bash
-# Start backend (port 5000)
+# Terminal 1 — backend on port 5000
 npm run dev
 
-# In a separate terminal, start frontend (port 3000)
-cd frontend
-npm run dev
+# Terminal 2 — frontend on port 3000
+cd frontend && npm run dev
 ```
 
-The app is now running at `http://localhost:3000`.
+App runs at `http://localhost:3000`.
 
 ---
 
 ## Project Workflow
 
-![Workflow Diagram](https://link.excalidraw.com/l/65VNwvy7c4X/58RLEJ4oOwh)
+See the full diagram: [Excalidraw Workflow](https://link.excalidraw.com/l/65VNwvy7c4X/58RLEJ4oOwh)
 
-The workflow covers the complete employee lifecycle:
-
-1. **Company Registration** -> Admin signs up with company details
-2. **Employee Onboarding** -> Admin creates employee, system generates credentials, sends welcome email
-3. **First Login** -> Employee logs in with temp password, forced to set new password
-4. **Daily Attendance** -> Employee checks in/out via navbar button, system tracks work hours
-5. **Leave Management** -> Employee submits request (with optional attachment), admin approves/rejects
-6. **Salary Management** -> Admin sets percentage-based salary structure, system computes breakdown
-7. **Profile Management** -> Employee updates skills and certifications, admin edits details
+1. **Company registration** — admin signs up with company details
+2. **Employee onboarding** — admin creates the employee, system generates credentials and sends a welcome email
+3. **First login** — employee logs in with the temp password, forced to set a new one
+4. **Daily attendance** — check in/out from the navbar, work hours computed automatically
+5. **Leave management** — employee submits a request with an optional attachment, admin approves or rejects
+6. **Salary management** — admin sets a percentage-based salary structure, system computes the breakdown
+7. **Profile management** — employee updates skills and certifications, admin edits core details
 
 ---
 
 ## Environment Variables
 
 | Variable | Description | Default |
-|----------|-------------|---------|
+|---|---|---|
 | `PORT` | Backend server port | `5000` |
-| `DATABASE_URL` | PostgreSQL connection string | - |
-| `JWT_SECRET` | Secret for JWT token signing | - |
+| `DATABASE_URL` | PostgreSQL connection string | — |
+| `JWT_SECRET` | Secret for JWT signing | — |
 | `SMTP_HOST` | SMTP server host | `smtp.gmail.com` |
 | `SMTP_PORT` | SMTP server port | `587` |
-| `SMTP_USER` | SMTP username/email | - |
-| `SMTP_PASS` | SMTP password (app password for Gmail) | - |
-| `EMAIL_FROM` | Sender email address | - |
-| `FRONTEND_URL` | Frontend origin URL (for CORS + emails) | `http://localhost:3000` |
-| `VITE_API_URL` | Backend API URL (frontend .env) | `http://localhost:5000` |
+| `SMTP_USER` | SMTP username/email | — |
+| `SMTP_PASS` | SMTP app password | — |
+| `EMAIL_FROM` | Sender email address | — |
+| `FRONTEND_URL` | Frontend origin (CORS + email links) | `http://localhost:3000` |
+| `VITE_API_URL` | Backend API URL (frontend `.env`) | `http://localhost:5000` |
 
 ---
 
-## License
+<div align="center">
 
-This project was built as part of the **Odoo Hackathon** initiative.
+Built for the **Odoo x Adamas University Hackathon '26**
+
+</div>
