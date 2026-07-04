@@ -5,6 +5,7 @@ const { body, validationResult } = require('express-validator');
 const pool = require('../db');
 const { generateEmployeeCode, deriveCompanyCode } = require('../utils/idGenerator');
 const { requireAuth } = require('../middleware/auth');
+const { isValidPassword } = require('../utils/passwordGenerator');
 
 const router = express.Router();
 
@@ -17,7 +18,14 @@ router.post(
     body('adminName').trim().notEmpty().withMessage('Admin name is required'),
     body('email').isEmail().withMessage('Valid email is required'),
     body('phone').optional().isMobilePhone('any'),
-    body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+    body('password')
+      .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+      .custom((value) => {
+        if (!isValidPassword(value)) {
+          throw new Error('Password must include uppercase, lowercase, number, and special character (!@#$%^&*)');
+        }
+        return true;
+      }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -135,7 +143,14 @@ router.post(
   '/change-password',
   requireAuth,
   [
-    body('newPassword').isLength({ min: 8 }).withMessage('New password must be at least 8 characters'),
+    body('newPassword')
+      .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+      .custom((value) => {
+        if (!isValidPassword(value)) {
+          throw new Error('Password must include uppercase, lowercase, number, and special character (!@#$%^&*)');
+        }
+        return true;
+      }),
     body('employeeCode').optional().trim().notEmpty(),
   ],
   async (req, res) => {

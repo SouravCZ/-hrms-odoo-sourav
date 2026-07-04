@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db');
 const { generateEmployeeCode } = require('../utils/idGenerator');
+const { generatePassword } = require('../utils/passwordGenerator');
+const { sendWelcomeEmail } = require('../services/emailService');
 const { requireAuth, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
@@ -39,7 +41,8 @@ router.post(
       const employeeCode = await generateEmployeeCode(
         req.user.companyId, companyCode, firstName, lastName, joinDate
       );
-      const passwordHash = await bcrypt.hash(employeeCode, 10);
+      const tempPassword = generatePassword(12);
+      const passwordHash = await bcrypt.hash(tempPassword, 10);
 
       const result = await pool.query(
         `INSERT INTO users
@@ -59,9 +62,19 @@ router.post(
         [result.rows[0].id, year]
       );
 
+      const emailSent = await sendWelcomeEmail({
+        to: email,
+        name: `${firstName} ${lastName}`,
+        employeeCode,
+        password: tempPassword,
+      });
+
       res.status(201).json({
-        message: 'Employee created. Login with employee code as password and change it on first login.',
+        message: emailSent
+          ? 'Employee created. Welcome email sent with login credentials.'
+          : 'Employee created. Could not send email. Share credentials manually.',
         employee: result.rows[0],
+        tempPassword,
       });
     } catch (err) {
       console.error(err);
