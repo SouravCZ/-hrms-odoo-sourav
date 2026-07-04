@@ -1,0 +1,6 @@
+Drop your logo.png here.
+
+Referenced in Navbar.jsx and the Sign In / Sign Up pages as:
+  import logo from '../../assets/logo.png';
+
+Recommended size: roughly square, 64x64 to 128x128px, transparent background.

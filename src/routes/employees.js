@@ -91,7 +91,8 @@ router.get('/', requireAuth, async (req, res) => {
     const { rows } = await pool.query(
       `SELECT u.id, u.employee_code, u.first_name, u.last_name, u.department,
               u.job_title, u.profile_pic_url,
-              COALESCE(a.status, 'absent') AS status
+              COALESCE(a.status, 'absent') AS status,
+              a.check_in, a.check_out
        FROM users u
        LEFT JOIN attendance a ON a.user_id = u.id AND a.date = $1
        WHERE u.company_id = $2 AND u.role != 'admin'
@@ -105,6 +106,102 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
+// PUT /api/employees/:id/resume  (self — update own skills, certifications, about)
+router.put(
+  '/:id/resume',
+  requireAuth,
+  async (req, res) => {
+    const empId = parseInt(req.params.id, 10);
+    if (isNaN(empId)) return res.status(400).json({ error: 'Invalid employee ID' });
+    if (req.user.id !== empId) return res.status(403).json({ error: 'Can only update your own resume' });
+
+    const { about, skills, certifications } = req.body;
+
+    try {
+      const result = await pool.query(
+        `UPDATE users SET
+           about = COALESCE($1, about),
+           skills = COALESCE($2, skills),
+           certifications = COALESCE($3, certifications)
+         WHERE id = $4 AND company_id = $5
+         RETURNING id, about, skills, certifications`,
+        [
+          about !== undefined ? about : null,
+          skills !== undefined ? JSON.stringify(skills) : null,
+          certifications !== undefined ? JSON.stringify(certifications) : null,
+          empId, req.user.companyId,
+        ]
+      );
+
+      if (!result.rows.length) return res.status(404).json({ error: 'Employee not found' });
+      res.json({ message: 'Resume updated', resume: result.rows[0] });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Server error updating resume' });
+    }
+  }
+);
+
+// PUT /api/employees/:id  (Admin/HR only — update employee details)
+router.put(
+  '/:id',
+  requireAuth,
+  requireRole('admin', 'hr'),
+  [
+    body('firstName').optional().trim().notEmpty(),
+    body('lastName').optional().trim().notEmpty(),
+    body('email').optional().isEmail(),
+    body('phone').optional().isMobilePhone('any'),
+    body('joiningDate').optional().isISO8601(),
+    body('department').optional().trim().isLength({ max: 100 }),
+    body('jobTitle').optional().trim().isLength({ max: 100 }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const empId = parseInt(req.params.id, 10);
+    if (isNaN(empId)) return res.status(400).json({ error: 'Invalid employee ID' });
+
+    try {
+      const existing = await pool.query(
+        'SELECT id FROM users WHERE id = $1 AND company_id = $2',
+        [empId, req.user.companyId]
+      );
+      if (!existing.rows.length) return res.status(404).json({ error: 'Employee not found' });
+
+      if (req.body.email) {
+        const emailCheck = await pool.query(
+          'SELECT id FROM users WHERE email = $1 AND id != $2',
+          [req.body.email, empId]
+        );
+        if (emailCheck.rows.length) return res.status(409).json({ error: 'Email already in use' });
+      }
+
+      const { firstName, lastName, email, phone, department, jobTitle, joiningDate } = req.body;
+
+      const result = await pool.query(
+        `UPDATE users SET
+           first_name = COALESCE($1, first_name),
+           last_name = COALESCE($2, last_name),
+           email = COALESCE($3, email),
+           phone = COALESCE($4, phone),
+           department = COALESCE($5, department),
+           job_title = COALESCE($6, job_title),
+           joining_date = COALESCE($7, joining_date)
+         WHERE id = $8 AND company_id = $9
+         RETURNING id, employee_code, first_name, last_name, email, phone, department, job_title, joining_date`,
+        [firstName, lastName, email, phone, department, jobTitle, joiningDate, empId, req.user.companyId]
+      );
+
+      res.json({ message: 'Employee updated', employee: result.rows[0] });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Server error updating employee' });
+    }
+  }
+);
+
 // GET /api/employees/:id  (any authenticated user — used for view-only profile modal)
 router.get('/:id', requireAuth, async (req, res) => {
   try {
@@ -113,7 +210,8 @@ router.get('/:id', requireAuth, async (req, res) => {
 
     const { rows } = await pool.query(
       `SELECT id, employee_code, first_name, last_name, email, phone,
-              department, job_title, joining_date, profile_pic_url, role
+              department, job_title, joining_date, profile_pic_url, role,
+              about, skills, certifications
        FROM users WHERE id = $1 AND company_id = $2`,
       [empId, req.user.companyId]
     );

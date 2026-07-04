@@ -24,6 +24,9 @@ CREATE TABLE users (
   manager_id INTEGER REFERENCES users(id),
   joining_date DATE DEFAULT CURRENT_DATE,
   profile_pic_url TEXT,
+  about TEXT,
+  skills JSONB DEFAULT '[]'::jsonb,
+  certifications JSONB DEFAULT '[]'::jsonb,
   force_password_change BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -85,3 +88,8 @@ CREATE TABLE salary (
 
 -- Helpful index for the "employees list with today's attendance" query
 CREATE INDEX idx_attendance_user_date ON attendance(user_id, date);
+
+-- Migration: add resume fields to users (run if table already exists)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS about TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS skills JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS certifications JSONB DEFAULT '[]'::jsonb;

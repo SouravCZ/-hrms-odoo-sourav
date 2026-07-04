@@ -93,6 +93,22 @@ router.post('/check-out', requireAuth, async (req, res) => {
   }
 });
 
+// GET /api/attendance/me/today  (self — returns today's attendance record)
+router.get('/me/today', requireAuth, async (req, res) => {
+  try {
+    const date = today();
+    const { rows } = await pool.query(
+      `SELECT date, check_in, check_out, work_hours, extra_hours, status
+       FROM attendance WHERE user_id = $1 AND date = $2`,
+      [req.user.id, date]
+    );
+    res.json(rows[0] || { date, check_in: null, check_out: null, status: 'absent' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error fetching today attendance' });
+  }
+});
+
 // GET /api/attendance/day?date=YYYY-MM-DD  (Admin/HR — matches the admin single-day table view)
 router.get('/day', requireAuth, requireRole('admin', 'hr'), async (req, res) => {
   try {
