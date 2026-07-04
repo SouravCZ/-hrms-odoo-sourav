@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db');
-const { generateEmployeeCode, generateTempPassword } = require('../utils/idGenerator');
+const { generateEmployeeCode } = require('../utils/idGenerator');
 const { requireAuth, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
@@ -19,6 +19,8 @@ router.post(
     body('email').isEmail(),
     body('phone').optional().isMobilePhone('any'),
     body('joiningDate').optional().isISO8601(),
+    body('department').optional().trim().isLength({ max: 100 }),
+    body('jobTitle').optional().trim().isLength({ max: 100 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -37,8 +39,7 @@ router.post(
       const employeeCode = await generateEmployeeCode(
         req.user.companyId, companyCode, firstName, lastName, joinDate
       );
-      const tempPassword = generateTempPassword();
-      const passwordHash = await bcrypt.hash(tempPassword, 10);
+      const passwordHash = await bcrypt.hash(employeeCode, 10);
 
       const result = await pool.query(
         `INSERT INTO users
@@ -58,12 +59,9 @@ router.post(
         [result.rows[0].id, year]
       );
 
-      // Temp password is returned once here for the Admin to hand off manually
-      // (no email-sending step — out of scope for the hackathon window).
       res.status(201).json({
-        message: 'Employee created',
+        message: 'Employee created. Login with employee code as password and change it on first login.',
         employee: result.rows[0],
-        tempPassword,
       });
     } catch (err) {
       console.error(err);
@@ -97,20 +95,23 @@ router.get('/', requireAuth, async (req, res) => {
 // GET /api/employees/:id  (any authenticated user — used for view-only profile modal)
 router.get('/:id', requireAuth, async (req, res) => {
   try {
+    const empId = parseInt(req.params.id, 10);
+    if (isNaN(empId)) return res.status(400).json({ error: 'Invalid employee ID' });
+
     const { rows } = await pool.query(
       `SELECT id, employee_code, first_name, last_name, email, phone,
               department, job_title, joining_date, profile_pic_url, role
        FROM users WHERE id = $1 AND company_id = $2`,
-      [req.params.id, req.user.companyId]
+      [empId, req.user.companyId]
     );
     if (!rows.length) return res.status(404).json({ error: 'Employee not found' });
 
-    const isSelf = req.user.id === parseInt(req.params.id, 10);
+    const isSelf = req.user.id === empId;
     const isAdmin = ['admin', 'hr'].includes(req.user.role);
 
     let salary = null;
     if (isSelf || isAdmin) {
-      const salaryRes = await pool.query('SELECT * FROM salary WHERE user_id = $1', [req.params.id]);
+      const salaryRes = await pool.query('SELECT * FROM salary WHERE user_id = $1', [empId]);
       salary = salaryRes.rows[0] || null;
     }
 

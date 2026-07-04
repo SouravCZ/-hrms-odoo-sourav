@@ -55,10 +55,18 @@ router.post(
         [company.id, employeeCode, firstName, lastName, email, phone || null, passwordHash]
       );
 
+      const admin = userResult.rows[0];
+      const token = jwt.sign(
+        { id: admin.id, companyId: company.id, role: admin.role, forcePasswordChange: false },
+        process.env.JWT_SECRET,
+        { expiresIn: '12h' }
+      );
+
       res.status(201).json({
         message: 'Company and admin account created',
         company,
-        admin: userResult.rows[0],
+        admin,
+        token,
       });
     } catch (err) {
       console.error(err);
@@ -121,23 +129,41 @@ router.post(
 );
 
 // POST /api/auth/change-password
-// Used both for the mandatory first-login change and voluntary later changes.
+// Self: no employeeCode needed (changes own password).
+// Admin/HR: send employeeCode to set that employee's password.
 router.post(
   '/change-password',
   requireAuth,
   [
     body('newPassword').isLength({ min: 8 }).withMessage('New password must be at least 8 characters'),
+    body('employeeCode').optional().trim().notEmpty(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const { newPassword } = req.body;
+    const { newPassword, employeeCode } = req.body;
     try {
+      let targetUserId = req.user.id;
+
+      if (employeeCode) {
+        if (!['admin', 'hr'].includes(req.user.role)) {
+          return res.status(403).json({ error: 'Only admin or hr can change another employee\'s password' });
+        }
+        const { rows } = await pool.query(
+          `SELECT id FROM users WHERE employee_code = $1 AND company_id = $2`,
+          [employeeCode, req.user.companyId]
+        );
+        if (!rows.length) {
+          return res.status(404).json({ error: 'Employee not found' });
+        }
+        targetUserId = rows[0].id;
+      }
+
       const passwordHash = await bcrypt.hash(newPassword, 10);
       await pool.query(
         `UPDATE users SET password_hash = $1, force_password_change = FALSE WHERE id = $2`,
-        [passwordHash, req.user.id]
+        [passwordHash, targetUserId]
       );
       res.json({ message: 'Password updated' });
     } catch (err) {

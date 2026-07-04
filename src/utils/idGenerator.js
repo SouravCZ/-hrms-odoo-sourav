@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const pool = require('../db');
 
 /**
@@ -25,17 +24,6 @@ async function generateEmployeeCode(companyId, companyCode, firstName, lastName,
   return `${companyCode.toUpperCase()}${namePart}${year}${serial}`;
 }
 
-function generateTempPassword() {
-  // Readable temp password: 2 letters + 4 digits + 1 symbol, e.g. "Ab3492!"
-  const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-  const l1 = letters[crypto.randomInt(letters.length)];
-  const l2 = letters[crypto.randomInt(letters.length)].toLowerCase();
-  const digits = crypto.randomInt(1000, 9999);
-  const symbols = '!@#$%';
-  const sym = symbols[crypto.randomInt(symbols.length)];
-  return `${l1}${l2}${digits}${sym}`;
-}
-
 function deriveCompanyCode(companyName) {
   const words = companyName.trim().split(/\s+/);
   if (words.length >= 2) {
@@ -44,4 +32,4 @@ function deriveCompanyCode(companyName) {
   return companyName.slice(0, 2).toUpperCase();
 }
 
-module.exports = { generateEmployeeCode, generateTempPassword, deriveCompanyCode };
+module.exports = { generateEmployeeCode, deriveCompanyCode };
