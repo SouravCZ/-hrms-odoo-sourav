@@ -1,0 +1,294 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Employee Profile - Salary Info | HRMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#cbc3d5",
+                        "on-primary-container": "#ceb8ff",
+                        "surface-bright": "#f9f9fb",
+                        "on-secondary-fixed": "#201924",
+                        "surface-container-highest": "#e2e2e4",
+                        "surface-container": "#eeeef0",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#6c45c0",
+                        "on-secondary-container": "#6b616e",
+                        "secondary": "#655b68",
+                        "secondary-fixed": "#ecdeee",
+                        "on-primary-fixed": "#24005b",
+                        "on-tertiary-fixed": "#2e1500",
+                        "secondary-fixed-dim": "#cfc2d2",
+                        "inverse-on-surface": "#f0f0f2",
+                        "primary-container": "#5e35b1",
+                        "primary-fixed": "#eaddff",
+                        "tertiary-container": "#7b4200",
+                        "inverse-primary": "#d1bcff",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#1a1c1d",
+                        "on-primary-fixed-variant": "#5429a7",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2f3132",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#ffb371",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d9dadc",
+                        "surface": "#f9f9fb",
+                        "surface-container-low": "#f3f3f5",
+                        "on-tertiary-fixed-variant": "#6d3a00",
+                        "primary-fixed-dim": "#d1bcff",
+                        "surface-variant": "#e2e2e4",
+                        "surface-container-high": "#e8e8ea",
+                        "tertiary": "#5a2f00",
+                        "on-error-container": "#93000a",
+                        "background": "#f9f9fb",
+                        "outline": "#7b7484",
+                        "primary": "#461599",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#4d4450",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdcc2",
+                        "on-background": "#1a1c1d",
+                        "on-surface-variant": "#494453",
+                        "secondary-container": "#ecdeee",
+                        "tertiary-fixed-dim": "#ffb77a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin": "32px",
+                        "lg": "32px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "sm": "12px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Level 1 Shadow */
+        .shadow-level-1 {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin h-16 max-w-7xl mx-auto">
+<!-- Brand -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary" style="font-size: 28px;">corporate_fare</span>
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-inverse-primary">HRMS</span>
+</div>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex items-center gap-8 h-full">
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-primary dark:border-inverse-primary h-full flex items-center pt-2" href="#">Employees</a>
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary transition-colors h-full flex items-center" href="#">Attendance</a>
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary transition-colors h-full flex items-center" href="#">Time Off</a>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center space-x-md">
+<!-- Attendance Systray -->
+<div class="flex items-center gap-xs">
+<div class="w-2.5 h-2.5 rounded-full bg-error" title="Status"></div>
+<button class="px-3 py-1.5 border border-outline-variant rounded bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors active:scale-95 duration-150">
+        Check IN -&gt;
+    </button>
+</div>
+<button class="p-2 rounded-full text-secondary hover:text-primary hover:bg-surface-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="relative group">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer active:scale-95 duration-150 transition-transform">
+<img alt="User profile SK" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate employee in a brightly lit modern office setting. The lighting is soft and flattering, creating a clean, high-key light mode aesthetic. The background is slightly blurred with muted grays and whites. The individual is dressed in business casual attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDekei6k-8VQsHz9wHL2YjKHOsIQQAg2GyKGNJm_YjgxQoLbH7JdvUL2JB9gL7eSpy7y5LWExjWZDFj6bE0C06HQo-l12IAJjtRDFpyv9eqNb1AuVyeuWmvm24wLDG2WdKJpmjASS9rbgfyGsSSRV0GAd9vbjBk2Vibf346m289cMhGwhPWZJIIdGJCGF4q1aj1krE1b5aH4fKtntimKDiOyC6L7YgYJpUTgxkU84M-MT2LlqFy8r2f">
+</div>
+<!-- Profile Dropdown -->
+<div class="absolute right-0 top-full mt-2 w-40 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-level-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 flex flex-col overflow-hidden">
+<a class="px-4 py-3 text-body-md font-body-md text-on-surface hover:bg-surface-container transition-colors border-b border-outline-variant" href="#">My Profile</a>
+<a class="px-4 py-3 text-body-md font-body-md text-on-surface hover:bg-surface-container transition-colors" href="#">Log Out</a>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Layout -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-margin py-lg grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Summary Pane (Profile Card) -->
+<aside class="md:col-span-4 lg:col-span-3 flex flex-col gap-4">
+<div class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md flex flex-col items-center text-center">
+<div class="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-surface-container">
+<img alt="Employee Portrait" class="w-full h-full object-cover" data-alt="A high-quality portrait of a male employee in his 30s wearing a light blue button-down shirt. The lighting is studio quality, clean and bright, fitting a modern HR dashboard context. The background is a plain soft gray." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS9NUJ-p-mw6vokcE_NGz3M4xQ7WH3KHWPe1wHF_cgnJJwOCjZRn8IOym2CJknPqW0hvvvsj5aNhsrouxLfG-g3nd4DkuvZ8W712fzaAYL2hU1XnyVFpt8HMo1Ozi6D5C_ZqKn-wDaIhJMlYtZWBAQ1ZtRW8Ch0j883iHoy8-akoMg2GIj-ZDCALk3wk8JmBdjL_ca_u17hhh2mmrmjYuBt0bXOR_h5yibfOAmKevrU11Sc-jYtXre">
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-1">Alex Morgan</h2>
+<p class="font-body-sm text-body-sm text-secondary mb-4">Senior UX Designer</p>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[rgba(70,21,153,0.1)] text-primary font-label-md text-label-md mb-6">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Active
+                </span>
+<div class="w-full border-t border-outline-variant pt-4 flex flex-col gap-3 text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[20px]">mail</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">alex.m@hrms.inc</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[20px]">call</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+1 (555) 019-2834</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[20px]">location_on</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">New York Office</span>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md flex flex-col gap-2">
+<button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container transition-colors text-on-surface font-body-md text-body-md">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">download</span>
+<span class="">Download Payslip</span>
+</div>
+</button>
+<button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container transition-colors text-on-surface font-body-md text-body-md">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">request_quote</span>
+<span class="">Request Increment</span>
+</div>
+</button>
+</div>
+</aside>
+<!-- Right Content Area -->
+<section class="md:col-span-8 lg:col-span-9 flex flex-col gap-6">
+<!-- Tab Navigation (Content Level) -->
+<div class="border-b border-outline-variant flex gap-8 overflow-x-auto">
+<a class="pb-3 font-body-md text-body-md text-secondary hover:text-primary transition-colors whitespace-nowrap" href="#">Personal Details</a>
+<a class="pb-3 font-body-md text-body-md text-secondary hover:text-primary transition-colors whitespace-nowrap" href="#">Job Information</a>
+<a class="pb-3 font-body-md text-body-md text-primary font-bold border-b-2 border-primary whitespace-nowrap" href="#">Salary Info</a>
+<a class="pb-3 font-body-md text-body-md text-secondary hover:text-primary transition-colors whitespace-nowrap" href="#">Documents</a>
+</div>
+<!-- Salary Details Bento Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Earnings Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md flex flex-col h-full">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">payments</span>
+                            Earnings
+                        </h3>
+<span class="font-label-md text-label-md text-secondary">Monthly</span>
+</div>
+<div class="flex flex-col gap-0 flex-1">
+<!-- Table-like rows -->
+<div class="flex justify-between py-3 border-b border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Basic Salary</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$5,000.00</span>
+</div>
+<div class="flex justify-between py-3 border-b border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">House Rent Allowance (HRA)</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$2,000.00</span>
+</div>
+<div class="flex justify-between py-3 border-b border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Transport Allowance</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$400.00</span>
+</div>
+<div class="flex justify-between py-3 border-b border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Special Allowance</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$600.00</span>
+</div>
+</div>
+<div class="flex justify-between pt-4 mt-auto">
+<span class="font-body-md text-body-md text-on-surface font-semibold">Gross Earnings</span>
+<span class="font-body-md text-body-md text-primary font-bold">$8,000.00</span>
+</div>
+</div>
+<!-- Deductions Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md flex flex-col h-full">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error">money_off</span>
+                            Deductions
+                        </h3>
+<span class="font-label-md text-label-md text-secondary">Monthly</span>
+</div>
+<div class="flex flex-col gap-0 flex-1">
+<!-- Table-like rows -->
+<div class="flex justify-between py-3 border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Provident Fund (PF)</span>
+<span class="font-label-md text-label-md text-secondary mt-1">12% of Basic</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface font-medium">$600.00</span>
+</div>
+<div class="flex justify-between py-3 border-b border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Professional Tax</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$50.00</span>
+</div>
+<div class="flex justify-between py-3 border-b border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Income Tax (TDS)</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">$850.00</span>
+</div>
+</div>
+<div class="flex justify-between pt-4 mt-auto">
+<span class="font-body-md text-body-md text-on-surface font-semibold">Total Deductions</span>
+<span class="font-body-md text-body-md text-error font-bold">$1,500.00</span>
+</div>
+</div>
+<!-- Net Salary Highlight (Spans full width on LG) -->
+<div class="lg:col-span-2 bg-primary-fixed rounded-xl shadow-level-1 p-md flex flex-col sm:flex-row items-center justify-between border border-primary-fixed-dim">
+<div class="flex flex-col mb-4 sm:mb-0 text-center sm:text-left">
+<span class="font-label-md text-label-md text-on-primary-fixed-variant uppercase tracking-wider mb-1">Monthly Net Amount</span>
+<span class="font-headline-lg text-headline-lg text-on-primary-fixed font-bold">$6,500.00</span>
+<span class="font-body-sm text-body-sm text-on-primary-fixed-variant mt-1">Transferred to Chase Bank ending in *4920</span>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-body-md text-body-md font-medium hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+                            View Bank Details
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+
+</body></html>
